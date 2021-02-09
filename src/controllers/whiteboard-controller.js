@@ -16,6 +16,22 @@ module.exports.addNewEventCon = (req, res, next) => {
     })
 }
 
+/** Insert Tasks */
+module.exports.addNewEventCon = (req, res, next) => {
+    console.log(req.body);
+    userquery.insertTable('whiteboard_tasks', req.body).then(resp => {
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Data inserted successfully',
+            data: resp
+        });
+    }).catch(err => {
+        console.log(err, 'err');
+        res.status(200).send(err);
+    })
+}
+
 /** Get All Events */
 module.exports.getEvents = (req, res, next) => {
     userquery.simpleselect('whiteboard_events', '*', null).then(resp => {

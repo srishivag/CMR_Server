@@ -16,7 +16,7 @@ router.get('/server', (req, res, next) => {
 router.post('/api/events', wbCtrl.addNewEventCon);
 router.get('/api/events', wbCtrl.getEvents);
 router.post('/api/events/id', wbCtrl.getEventByIdCon);
-//router.post('/api/events', wbCtrl.getEventSearchCon);
+router.post('/api/tasks', wbCtrl.addNewEventCon);
 
 
 
