@@ -51,8 +51,8 @@ module.exports.getEvents = (req, res, next) => {
 
 /** Get All Events by id*/
 module.exports.getEventByIdCon = (req, res, next) => {
-    console.log("request is", req.query.id);
-    userquery.simpleselect('whiteboard_events', '*', `id='${req.query.id}'`).then(resp => {
+    console.log("request is", req.params.id);
+    userquery.simpleselect('whiteboard_events', '*', `id='${req.params.id}'`).then(resp => {
         console.log('get user by id', resp);
         res.status(200).json({
             success: true,
@@ -75,7 +75,7 @@ module.exports.updateEventCon = (req, res, next) => {
     //     email: req.body.email,
     //     password: req.body.password
     // }
-    userquery.updateTableWithWhere('whiteboard_events', `id=${req.query.id}`, req.body).then(resp => {
+    userquery.updateTableWithWhere('whiteboard_events', `id=${req.params.id}`, req.body).then(resp => {
         console.log("event details updated successful");
         res.status(200).json({
             success: true,
