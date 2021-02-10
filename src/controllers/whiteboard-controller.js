@@ -16,25 +16,21 @@ module.exports.addNewEventCon = (req, res, next) => {
     })
 }
 
-/** Insert Tasks */
-module.exports.addNewEventCon = (req, res, next) => {
-    console.log(req.body);
-    userquery.insertTable('whiteboard_tasks', req.body).then(resp => {
-        res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: 'Data inserted successfully',
-            data: resp
-        });
-    }).catch(err => {
-        console.log(err, 'err');
-        res.status(200).send(err);
-    })
-}
 
-/** Get All Events */
+/** Get All Events with search option*/
 module.exports.getEvents = (req, res, next) => {
-    userquery.simpleselect('whiteboard_events', '*', null).then(resp => {
+    let wherecond;
+    if (req.query.status != undefined) {
+        wherecond = `status = '${req.query.status}'`;
+    } else if (req.query.status != undefined || req.query.start_date != undefined) {
+        wherecond = `status = '${req.query.status}' AND start_date = '${req.query.start_date}'`;
+    } else if (req.query.status != undefined || req.query.start_date != undefined || req.query.end_date != undefined) {
+        wherecond = `status = '${req.query.status}' AND start_date = '${req.query.start_date}' AND end_date = '${req.query.end_date}'`;
+    }else {
+        wherecond = null;
+    }
+    console.log(wherecond,'#####')
+    userquery.simpleselect('whiteboard_events', '*', wherecond).then(resp => {
         console.log(resp, 'res');
         res.status(200).json({
             success: true,
@@ -49,7 +45,7 @@ module.exports.getEvents = (req, res, next) => {
 }
 
 
-
+/** Get All Events by id*/
 module.exports.getEventByIdCon = (req, res, next) => {
     console.log("request is", req.body);
     userquery.simpleselect('whiteboard_events', '*', `id='${req.body.id}'`).then(resp => {
@@ -66,42 +62,16 @@ module.exports.getEventByIdCon = (req, res, next) => {
     })
 }
 
-module.exports.getEventSearchCon = (req, res, next) => {
-    console.log("request is", req.body);
-    let wherecond;
-    if (req.body.status != undefined) {
-        wherecond = `status = '${req.body.status}'`;
-    } else if (req.body.status != undefined || req.body.start_date != undefined) {
-        wherecond = `status = '${req.body.status}' AND start_date = '${req.body.start_date}'`;
-    } else if (req.body.status != undefined || req.body.start_date != undefined || req.body.end_date != undefined) {
-        wherecond = `status = '${req.body.status}' AND start_date = '${req.body.start_date}' AND end_date = '${req.body.end_date}'`;
-    } 
-    // else if (req.body.start_date != undefined || req.body.end_date != undefined) {
-    //     wherecond = `start_date = '${req.body.start_date}' AND end_date = '${req.body.end_date}'`;
-    // }
-    userquery.simpleselect('whiteboard_events', '*', wherecond).then(resp => {
-        console.log('get user by id', resp);
-        res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: 'User data read successfully',
-
-            data: resp
-        });
-    }).catch(err => {
-        res.status(200).send(err);
-    })
-}
 
 
-/** Edit Events */
+/** Update Events */
 module.exports.updateEventCon = (req, res, next) => {
-    let obj = {
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password
-    }
-    userquery.updateTableWithWhere('whiteboard_events', `id=${req.body.id}`, obj).then(resp => {
+    // let obj = {
+    //     username: req.body.username,
+    //     email: req.body.email,
+    //     password: req.body.password
+    // }
+    userquery.updateTableWithWhere('whiteboard_events', `id=${req.query.id}`, req.body).then(resp => {
         console.log("event details updated successful");
         res.status(200).json({
             success: true,
@@ -117,5 +87,54 @@ module.exports.updateEventCon = (req, res, next) => {
             message: 'Error while updating event details',
             data: err
         });
+    })
+}
+
+
+
+/** Insert Tasks */
+module.exports.addNewTaskCon = (req, res, next) => {
+    console.log(req.body);
+    userquery.insertTable('whiteboard_tasks', req.body).then(resp => {
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Data inserted successfully',
+            data: resp
+        });
+    }).catch(err => {
+        console.log(err, 'err');
+        res.status(200).send(err);
+    })
+}
+
+/** Get All Events */
+module.exports.getTasksCon = (req, res, next) => {
+    userquery.simpleselect('whiteboard_tasks', '*', null).then(resp => {
+       // console.log(resp, 'res');
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'whiteboard events read successful',
+            data: resp
+        });
+    }).catch(err => {
+        res.status(200).send(err);
+    })
+
+}
+
+module.exports.getTasksByIdCon = (req, res, next) => {
+    console.log("request is ------------", req.query);
+    userquery.simpleselect('whiteboard_tasks', '*', `id=${req.query.id}`).then(resp => {
+        console.log('get user by id', resp);
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'User data read successfully',
+            data: resp
+        });
+    }).catch(err => {
+        res.status(200).send(err);
     })
 }
