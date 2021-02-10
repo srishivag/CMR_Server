@@ -1,4 +1,5 @@
 var userquery = require('../library/userquery.js');
+var moment = require('moment');
 
 /** Insert Events */
 module.exports.addNewEventCon = (req, res, next) => {
@@ -20,12 +21,14 @@ module.exports.addNewEventCon = (req, res, next) => {
 /** Get All Events with search option*/
 module.exports.getEvents = (req, res, next) => {
     let wherecond;
+    let startdate = moment.utc(req.query.start_date).format('YYYY-MM-DD');
+    let enddate = moment.utc(req.query.end_date).format('YYYY-MM-DD');
     if (req.query.status != undefined) {
-        wherecond = `status = '${req.query.status}'`;
-    } else if (req.query.status != undefined || req.query.start_date != undefined) {
-        wherecond = `status = '${req.query.status}' AND start_date = '${req.query.start_date}'`;
-    } else if (req.query.status != undefined || req.query.start_date != undefined || req.query.end_date != undefined) {
-        wherecond = `status = '${req.query.status}' AND start_date = '${req.query.start_date}' AND end_date = '${req.query.end_date}'`;
+        wherecond = `status IN (${req.query.status})`;
+    }else if (req.query.status != undefined && req.query.start_date != undefined && req.query.end_date != undefined) {
+        wherecond = `status IN (${req.query.status}) AND scheduled > '${startdate}' scheduled < '${enddate}'`;
+    }else if (req.query.start_date != undefined && req.query.end_date != undefined) {
+        wherecond = `scheduled > '${startdate}' AND scheduled < '${enddate}'`;
     }else {
         wherecond = null;
     }
