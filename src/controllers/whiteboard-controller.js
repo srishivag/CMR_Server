@@ -23,10 +23,11 @@ module.exports.getEvents = (req, res, next) => {
     let wherecond;
     let startdate = moment.utc(req.query.start_date).format('YYYY-MM-DD');
     let enddate = moment.utc(req.query.end_date).format('YYYY-MM-DD');
-    if (req.query.status != undefined) {
-        wherecond = `status IN (${req.query.status})`;
-    }else if (req.query.status != undefined && req.query.start_date != undefined && req.query.end_date != undefined) {
-        wherecond = `status IN (${req.query.status}) AND scheduled > '${startdate}' scheduled < '${enddate}'`;
+    //if (req.query.status != undefined) {
+      //  wherecond = `status IN (${req.query.status})`;
+    //}else
+    if ((req.query.status != undefined) && (req.query.start_date != undefined && req.query.end_date != undefined)) {
+        wherecond = `status IN (${req.query.status}) AND scheduled > '${startdate}' AND scheduled < '${enddate}'`;
     }else if (req.query.start_date != undefined && req.query.end_date != undefined) {
         wherecond = `scheduled > '${startdate}' AND scheduled < '${enddate}'`;
     }else {
@@ -50,8 +51,8 @@ module.exports.getEvents = (req, res, next) => {
 
 /** Get All Events by id*/
 module.exports.getEventByIdCon = (req, res, next) => {
-    console.log("request is", req.body);
-    userquery.simpleselect('whiteboard_events', '*', `id='${req.body.id}'`).then(resp => {
+    console.log("request is", req.query.id);
+    userquery.simpleselect('whiteboard_events', '*', `id='${req.query.id}'`).then(resp => {
         console.log('get user by id', resp);
         res.status(200).json({
             success: true,
