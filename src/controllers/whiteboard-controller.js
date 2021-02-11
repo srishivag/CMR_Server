@@ -142,3 +142,31 @@ module.exports.getTasksByIdCon = (req, res, next) => {
         res.status(200).send(err);
     })
 }
+
+
+module.exports.jointables = async (req, res, next) => {
+    var allData = {
+        selectList: ['ts.*,proj.pname,proj.status as pstatus'],
+        joins: [
+            {
+                type: 'left',
+                table: 'projects',
+                alias: 'proj',
+                on: 'proj.pid = ts.pid'
+            }
+        ],
+        where: `uid='${req.body.userid}' ORDER BY task_id DESC limit 5`
+    }
+    await userquery.commonSelectQuery('tasks', 'ts', allData).then(resp => {
+       res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Task By Id read successful',
+            data: resp
+        });
+
+    }).catch(err => {
+        console.log(err, 'errrrrrrr');
+        res.status(200).send(err);
+    })
+}

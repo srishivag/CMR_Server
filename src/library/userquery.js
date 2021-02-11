@@ -82,6 +82,34 @@ let deleteTable = function (tableName, columnName, columnValue) {
     })
 }
 
+let commonSelectQuery = function (tableName, aliasName, allData) {
+    return new Promise((resolve, reject) => {
+        // var query = `SELECT u.user_id, t.task_name, ts.duration from users as u left join tasks as t on t.uid = u.user_id left join timesheet as ts on ts.uid = u.user_id WHERE u.user_id = 2`
+        // console.log(allData);
+        let mod;
+        if (typeof (allData.joins) == "object") {
+            let joins = [];
+            for (let i of allData.joins) {
+                joins.push(i.type + ' join ' + i.table + ' as ' + i.alias + ' on ' + i.on);
+            }
+            // console.log(allData.selectList.join('').split(','));
+            let selectData = allData.selectList.join('').split(',');
+            mod = knex.knex((tableName) + ' as ' + aliasName).joinRaw(joins.join(' ')).select(selectData);
+        } else if (typeof (allData.joins) == "string") {
+            mod = knex.knex((tableName) + ' as ' + aliasName).joinRaw(allData.joins).select(allData.selectList.split(','));
+        }
+        if (allData.where) {
+            mod = mod.whereRaw(allData.where);
+        }
+        console.log(mod.toQuery(), "final query");
+        mod.then(result => {
+            resolve(result);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
 
 module.exports = {
     insertTable,
@@ -89,5 +117,6 @@ module.exports = {
     simpleselect,
     updateTable,
     updateTableWithWhere,
-    deleteTable
+    deleteTable,
+    commonSelectQuery
 }
