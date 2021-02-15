@@ -1,10 +1,10 @@
 var userquery = require('../library/userquery.js');
 var moment = require('moment');
-
+const Joi = require("joi");
+const { start } = require('repl');
 /** Insert Events */
 module.exports.addNewEventCon = (req, res, next) => {
-    console.log(req.body);
-    userquery.insertTable('whiteboard_events', req.body).then(resp => {
+    d
         res.status(200).json({
             success: true,
             statusCode: 200,
@@ -21,8 +21,12 @@ module.exports.addNewEventCon = (req, res, next) => {
 /** Get All Events with search option*/
 module.exports.getEvents = (req, res, next) => {
     let wherecond;
-    let startdate = moment.utc(req.query.start_date).format('YYYY-MM-DD');
-    let enddate = moment.utc(req.query.end_date).format('YYYY-MM-DD');
+    //let x = new Date(req.query.start_date).getTime();
+    //console.log(x,'xxxxxxxxxx');
+    //moment.unix(utc).utc().format('YYYY-MM-DD HH:mm:ss');
+    let startdate = moment.utc(req.query.start_date).format();
+    let enddate = moment.utc(req.query.end_date).format();
+    console.log(startdate,'----------------',enddate);
     //if (req.query.status != undefined) {
       //  wherecond = `status IN (${req.query.status})`;
     //}else
