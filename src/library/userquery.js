@@ -108,8 +108,7 @@ let commonSelectQuery = function (tableName, aliasName, allData) {
             reject(error);
         })
     })
-}
-
+};
 
 module.exports = {
     insertTable,

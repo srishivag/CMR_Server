@@ -4,7 +4,27 @@ const Joi = require("joi");
 const { start } = require('repl');
 /** Insert Events */
 module.exports.addNewEventCon = (req, res, next) => {
-    d
+    let x = new Date(req.body.scheduled).getTime();
+    console.log(x,'xxxxxxxxx');
+    let dateFormat = moment.utc(x).format();
+    console.log(dateFormat,'dateeeeeeeeee');
+    let obj={
+        "status": req.body.status,
+        "whiteboard_task_id": req.body.whiteboard_task_id,
+        "description": req.body.description,
+        "scheduled": dateFormat,
+        "duration_minutes": req.body.duration_minutes,
+        "location_latitude": req.body.location_latitude,
+        "location_longitude": req.body.location_longitude,
+        "location_address": req.body.location_address,
+        "city": req.body.city,
+        "state": req.body.state,
+        "contact_name": req.body.contact_name,
+        "contact_phone_number": req.body.contact_phone_number,
+        "notes": req.body.notes
+    }
+    // console.log(req.body);
+    userquery.insertTable('whiteboard_events', obj).then(resp => {
         res.status(200).json({
             success: true,
             statusCode: 200,
